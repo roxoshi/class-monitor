@@ -5,7 +5,6 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 
 
-
 def cleantext(text_str: str) -> str:
     #will replace the html characters with " "
     text_str=re.sub('<.*?>', ' ', text_str)  
