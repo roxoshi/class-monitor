@@ -12,6 +12,7 @@ def _unquiwords(corpus:list,method:str='count') -> dict:
     corpus = list of documents
     method = count | frequency
     """
+    #corpus = [x[1] for x in corpus]
     d_wordcount = {}
     total_words = 0
     for row in tqdm(corpus):
@@ -26,7 +27,8 @@ def _unquiwords(corpus:list,method:str='count') -> dict:
             d_wordcount[k] = round(v/total_words,4)
     return d_wordcount
 
-def _doc_to_vector(corpus: list, wordcount: dict) -> list:
+def _doc_to_vector(corpus: list) -> str:
+    wordcount = _unquiwords(corpus)
     max_vec_len = 0
     output_vector_corpus = os.path.join('data','output_vector.txt')
     with open(output_vector_corpus,'w') as f:
@@ -40,6 +42,7 @@ def _doc_to_vector(corpus: list, wordcount: dict) -> list:
             f.write(f"{row[0]},{doc_vector_str}\n")
     
     print("Max length of document vector is:", max_vec_len)
+    return output_vector_corpus
 
 
 
@@ -49,20 +52,22 @@ def _file_to_corpus(fpath: str) -> list:
         raw_txt = f.readlines()
     for row in raw_txt:
         row_list = row.split(",", maxsplit=3)
-        li_tuples.append((row_list[1],cleantext(row_list[2]))) # tuple of (label, tweet)
+        li_tuples.append((row_list[1],row_list[2])) # tuple of (label, tweet)
     
     #print("Sample corpus tuple:\n",li_tuples)
     
     return li_tuples
 
+def clean_tuple(tuple_list):
+    return [cleantext(x[1]) for x in tuple_list]
+
 if __name__ == '__main__':
-    start_time = time.time()
     csv_path = os.path.join('data','train.csv')
-    li_tuples = _file_to_corpus(csv_path)
-    corpus_list = [x[1] for x in li_tuples]
-    wordcount = _unquiwords(corpus_list, 'frequency')
-    _doc_to_vector(li_tuples, wordcount)
-    print(f"Total run time: {time.time() - start_time}s")
+    inp = csv_path
+    for func in [_file_to_corpus, clean_tuple, _doc_to_vector]:
+        inp = func(inp)
+    
+    print("final output is: ", inp)
 
 
         
