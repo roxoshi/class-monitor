@@ -1,4 +1,3 @@
-from lib2to3.pgen2 import token
 import re
 import string
 from nltk.tokenize import word_tokenize
@@ -28,7 +27,7 @@ if __name__ == "__main__":
     txt = "Hello12 My name is      Admiral! General! Aaladeen:)"
     clntxt = cleantext(txt)
     print(clntxt)
-    tokentxt = tokenizeit(clntxt)
-    print(tokentxt)
-    lemtxt = [lemmatizeit(x) for x in tokentxt]
-    print(lemtxt)
+    # tokentxt = tokenizeit(clntxt)
+    # print(tokentxt)
+    # lemtxt = [lemmatizeit(x) for x in tokentxt]
+    # print(lemtxt)
