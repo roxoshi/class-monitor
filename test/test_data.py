@@ -5,5 +5,10 @@ print(train_path)
 with open(train_path, 'r') as f:
     raw_txt = f.readlines()
 
-print("text is: \n",raw_txt[0])
+# convert to format where 1st column is label
+# and second column is text
+
+
+
+
 
