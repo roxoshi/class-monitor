@@ -1,15 +1,18 @@
-from preprocessing import TransformText
+import nltk
+print(nltk.__version__)
 
-import os
-train_path = os.path.join('data','train.csv')
-print(train_path)
+# from preprocessing import TransformText
 
-with open(train_path, 'r') as f:
-    raw_txt = f.readlines()
+# import os
+# train_path = os.path.join('data','train.csv')
+# print(train_path)
+
+# with open(train_path, 'r') as f:
+#     raw_txt = f.readlines()
 
 
 
-t = TransformText
-t.readcsv = train_path
-output_dataset = t.run()
-print(output_dataset[:3])
+# t = TransformText
+# t.readcsv = train_path
+# output_dataset = t.run()
+# print(output_dataset[:3])

@@ -46,10 +46,10 @@ class TransformText(CleanText):
         #print("Sample corpus tuple:\n",li_tuples)
         return li_tuples
 
-    def clean_tuple(tuple_list) -> List[Tuple[int, list]]:
+    def clean_tuple(tuple_list:List[Tuple[int, list]]) -> List[Tuple[int, list]]:
         return [(int(x[0]),CleanText.cleantext(x[1])) for x in tuple_list]
 
-    def word_freq_count(corpus:list,method:str='frequency') -> Dict[str,float]:
+    def word_freq_count(corpus:List[Tuple[int, list]], method:str='frequency') -> Dict[str,float]:
         """
         return a dictionary of all words in the corpus and their
         numeric weight according to the defined method
@@ -71,7 +71,7 @@ class TransformText(CleanText):
                 d_wordcount[k] = round(v/total_words,4)
         return d_wordcount
 
-    def document_to_vector(corpus: list) -> List[Tuple[int, list]]:
+    def document_to_vector(corpus: List[Tuple[int, list]]) -> List[Tuple[int, list]]:
         """
         Input: list of tuple like [(label, tweet),..,..,]
         Output: Returns path of csv with label as first column
@@ -90,10 +90,20 @@ class TransformText(CleanText):
         TransformText.max_vector_len = max_vec_len
         return corpus_vector
 
+    def vector_padding(corpus: List[Tuple[int, list]]) -> List[Tuple[int, list]]:
+        for idx,vec in enumerate(corpus):
+            corpus_new = []
+            if len(vec[1]) < TransformText.max_vector_len:
+                padding_length= TransformText.max_vector_len - len(vec[1])
+                new_row = [vec[0],vec[1] + [0]*padding_length]
+                corpus_new.append(new_row)
+        return corpus_new
+
     def run() -> List[Tuple[int, list]]:
         t = TransformText
         inputfile = t.readcsv
         outputfile = t.file_to_corpus(inputfile)
         outputfile = t.clean_tuple(outputfile)
         outputfile = t.document_to_vector(outputfile)
+        outputfile = t.vector_padding(outputfile)
         return outputfile
