@@ -38,11 +38,10 @@ def run_and_log_model(estimator) -> None:
         'AUC' : auc,
         'random_state': 10
     }, indent=4)
-    with open ('training_terations_logs.jsonl', 'a') as f:
+    with open (os.path.join('logs','model_training_logs.jsonl'), 'a') as f:
         f.write(output_dict + "\n")
 
 if __name__ == '__main__':
     from sklearn.ensemble import RandomForestClassifier
-    from sklearn.svm import SVC
     clf = RandomForestClassifier(n_estimators=500)
     run_and_log_model(clf)
