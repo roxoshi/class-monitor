@@ -1,9 +1,13 @@
 import re
 import string
+import logging
 from typing import Dict, List, Tuple
 from tqdm import tqdm
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+
+logger = logging.basicConfig(level=logging.DEBUG)
+
 
 class CleanText:
 
@@ -91,12 +95,13 @@ class TransformText(CleanText):
         return corpus_vector
 
     def vector_padding(corpus: List[Tuple[int, list]]) -> List[Tuple[int, list]]:
-        for idx,vec in enumerate(corpus):
-            corpus_new = []
+        corpus_new = []
+        for idx, vec in enumerate(corpus):
             if len(vec[1]) < TransformText.max_vector_len:
-                padding_length= TransformText.max_vector_len - len(vec[1])
-                new_row = [vec[0],vec[1] + [0]*padding_length]
-                corpus_new.append(new_row)
+                padding_length = (TransformText.max_vector_len - len(vec[1]))
+                corpus_new.append((vec[0], vec[1]+[0.0]*padding_length))
+            else:
+                corpus_new.append(vec)
         return corpus_new
 
     def run() -> List[Tuple[int, list]]:
