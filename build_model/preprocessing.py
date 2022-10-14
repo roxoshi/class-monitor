@@ -98,8 +98,8 @@ class TransformText(CleanText):
         corpus_new = []
         for idx, vec in enumerate(corpus):
             if len(vec[1]) < TransformText.max_vector_len:
-                padding_length = (TransformText.max_vector_len - len(vec[1]))
-                corpus_new.append((vec[0], vec[1]+[0.0]*padding_length))
+                padding_length = (TransformText.max_vector_len - len(vec[1])) -1 
+                corpus_new.append((vec[0], vec[1] + [-1.0] + [0.0]*padding_length))
             else:
                 corpus_new.append(vec)
         return corpus_new
