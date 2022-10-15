@@ -45,8 +45,6 @@ class TransformText(CleanText):
         for row in raw_txt:
             row_list = row.split(",", maxsplit=3)
             li_tuples.append((row_list[1],row_list[2])) # tuple of (label, tweet)
-        
-        #print("Sample corpus tuple:\n",li_tuples)
         return li_tuples
 
     def clean_tuple(tuple_list:List[Tuple[int, list]]) -> List[Tuple[int, list]]:
@@ -69,14 +67,6 @@ class TransformText(CleanText):
                 if word not in d_wordcount.keys():
                     d_wordcount[word] = 1
                 d_wordcount[word] += 1
-        # new_dict = {}
-        # i = 0
-        # for k, v in sorted(d_wordcount.items(), key=lambda item: item[1]):
-        #     if i == 500: break
-        #     new_dict.update({k:v})
-        #     i += 1
-
-        # del d_wordcount
         if method == 'frequency':
             for k,v in d_wordcount.items():
                 d_wordcount[k] = round(v/total_words,4)
