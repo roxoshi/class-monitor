@@ -36,7 +36,6 @@ class CleanText:
 class TransformText(CleanText):
 
     readcsv = str()
-    max_vector_len = 0
 
     def file_to_corpus(fpath: str) -> List[Tuple[int, list]]:
         li_tuples = []
@@ -64,12 +63,20 @@ class TransformText(CleanText):
         #corpus = [x[1] for x in corpus]
         d_wordcount = {}
         total_words = 0
-        for row in tqdm(corpus):
+        for row in corpus:
             total_words += len(row[1])
             for word in row[1]: # row[0] is label, row[1] is tweet
                 if word not in d_wordcount.keys():
                     d_wordcount[word] = 1
                 d_wordcount[word] += 1
+        # new_dict = {}
+        # i = 0
+        # for k, v in sorted(d_wordcount.items(), key=lambda item: item[1]):
+        #     if i == 500: break
+        #     new_dict.update({k:v})
+        #     i += 1
+
+        # del d_wordcount
         if method == 'frequency':
             for k,v in d_wordcount.items():
                 d_wordcount[k] = round(v/total_words,4)
@@ -83,26 +90,23 @@ class TransformText(CleanText):
         """
         corpus_vector = list()
         wordcount = TransformText.word_freq_count(corpus)
-        max_vec_len = 0
         for idx,row in tqdm(enumerate(corpus)):
             if idx == 0: continue
             doc_text_vector = row[1]
-            doc_vector = [wordcount.get(x,0) for x in doc_text_vector]
-            if len(doc_vector) > max_vec_len:
-                max_vec_len = len(doc_vector)
+            doc_vector = []
+            i = 0
+            for k,v in wordcount.items():
+                if i == 2000: break
+                if k in doc_text_vector:
+                    doc_vector.append(v)
+                else:
+                    doc_vector.append(-1)
+                i += 1
+            with open('data/output_vec.txt','a') as f:
+                f.write(f"{row[0]},{doc_vector}\n")
             corpus_vector.append((row[0],doc_vector))
-        TransformText.max_vector_len = max_vec_len
         return corpus_vector
 
-    def vector_padding(corpus: List[Tuple[int, list]]) -> List[Tuple[int, list]]:
-        corpus_new = []
-        for idx, vec in enumerate(corpus):
-            if len(vec[1]) < TransformText.max_vector_len:
-                padding_length = (TransformText.max_vector_len - len(vec[1]))
-                corpus_new.append((vec[0], vec[1]+[0.0]*padding_length))
-            else:
-                corpus_new.append(vec)
-        return corpus_new
 
     def run() -> List[Tuple[int, list]]:
         t = TransformText
@@ -110,5 +114,5 @@ class TransformText(CleanText):
         outputfile = t.file_to_corpus(inputfile)
         outputfile = t.clean_tuple(outputfile)
         outputfile = t.document_to_vector(outputfile)
-        outputfile = t.vector_padding(outputfile)
         return outputfile
+    

@@ -12,11 +12,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, roc_auc_score
 logging.basicConfig(level=logging.DEBUG)
 
-def run_and_log_model(estimator) -> None:
+def run_and_log_model(estimator, comments=None) -> None:
     train_path = os.path.join('data','train.csv')
     t = TransformText
     t.readcsv = train_path
     output_dataset = t.run()
+    logging.info("Input dataset loaded")
     labels = np.array([x[0] for x in output_dataset])
     word_vector = np.array([x[1] for x in output_dataset])
 
@@ -31,17 +32,25 @@ def run_and_log_model(estimator) -> None:
     f1_val = f1_score(y_test, y_test_pred)
     auc  = roc_auc_score(y_test, y_test_pred)
     logging.info(f'f1 score is:{f1_val}')
+    # Logging some key params and comments for the
+    # model into a file
     output_dict= json.dumps({
         'model_algorithm' : classifier.__class__.__name__,
+        'data_shape': str(word_vector.shape),
         'params': classifier.get_params(),
         'f1_score' : f1_val,
         'AUC' : auc,
-        'random_state': 10
+        'random_state': 10,
+        'comments':comments
     }, indent=4)
     with open (os.path.join('logs','model_training_logs.jsonl'), 'a') as f:
         f.write(output_dict + "\n")
 
 if __name__ == '__main__':
+    comments = '''running model with counts BOW'''
     from sklearn.ensemble import RandomForestClassifier
+    from sklearn.linear_model import LogisticRegressionCV
+    from sklearn.svm import SVC
+    from xgboost import XGBClassifier
     clf = RandomForestClassifier(n_estimators=500)
-    run_and_log_model(clf)
+    run_and_log_model(clf,comments)
