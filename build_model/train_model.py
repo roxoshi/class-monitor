@@ -3,17 +3,17 @@ Here we will train an ML model on our
 corpus which we have converted to document vectors 
 """
 import numpy as np
-import os
 import logging
 import pickle
 import json
 from preprocessing import TransformText
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, roc_auc_score, precision_score, accuracy_score
+import config as cn
 logging.basicConfig(level=logging.DEBUG)
 
 def run_and_log_model(estimator, comments=None) -> None:
-    train_path = os.path.join('data','train.csv')
+    train_path = cn.TRAIN_FILE
     t = TransformText
     t.readcsv = train_path
     output_dataset = t.run()
@@ -47,8 +47,10 @@ def run_and_log_model(estimator, comments=None) -> None:
         'random_state': 10,
         'comments':comments
     }, indent=4)
-    with open (os.path.join('logs','model_training_logs.jsonl'), 'a') as f:
+    with open (cn.MODEL_LOGS, 'a') as f:
         f.write(output_dict + "\n")
+    with open(cn.MODEL_FILE,'wb') as fp:
+        pickle.dump(classifier, fp)
 
 if __name__ == '__main__':
     comments = '''running model with frequency BOW, default val 0'''
