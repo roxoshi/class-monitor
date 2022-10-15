@@ -96,7 +96,7 @@ class TransformText(CleanText):
             doc_vector = []
             i = 0
             for k,v in wordcount.items():
-                if i == 2000: break
+                if i == 1000: break
                 if k in doc_text_vector:
                     doc_vector.append(v)
                 else:

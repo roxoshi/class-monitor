@@ -56,7 +56,5 @@ if __name__ == '__main__':
     comments = '''running model with frequency BOW, default val 0'''
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.linear_model import LogisticRegressionCV
-    from sklearn.svm import SVC
-    from xgboost import XGBClassifier
     clf = RandomForestClassifier(n_estimators=500)
     run_and_log_model(clf,comments)
