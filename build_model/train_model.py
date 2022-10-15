@@ -9,7 +9,7 @@ import pickle
 import json
 from preprocessing import TransformText
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score, roc_auc_score
+from sklearn.metrics import f1_score, roc_auc_score, precision_score, accuracy_score
 logging.basicConfig(level=logging.DEBUG)
 
 def run_and_log_model(estimator, comments=None) -> None:
@@ -31,6 +31,8 @@ def run_and_log_model(estimator, comments=None) -> None:
     y_test_pred = classifier.predict(X_test)
     f1_val = f1_score(y_test, y_test_pred)
     auc  = roc_auc_score(y_test, y_test_pred)
+    precision = precision_score(y_test, y_test_pred)
+    accuracy = accuracy_score(y_test, y_test_pred)
     logging.info(f'f1 score is:{f1_val}')
     # Logging some key params and comments for the
     # model into a file
@@ -40,6 +42,8 @@ def run_and_log_model(estimator, comments=None) -> None:
         'params': classifier.get_params(),
         'f1_score' : f1_val,
         'AUC' : auc,
+        'precision': precision,
+        'accuracy': accuracy,
         'random_state': 10,
         'comments':comments
     }, indent=4)
@@ -47,7 +51,7 @@ def run_and_log_model(estimator, comments=None) -> None:
         f.write(output_dict + "\n")
 
 if __name__ == '__main__':
-    comments = '''running model with counts BOW'''
+    comments = '''running model with frequency BOW, default val 0'''
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.linear_model import LogisticRegressionCV
     from sklearn.svm import SVC

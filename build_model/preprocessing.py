@@ -89,7 +89,7 @@ class TransformText(CleanText):
             and feature vector
         """
         corpus_vector = list()
-        wordcount = TransformText.word_freq_count(corpus)
+        wordcount = TransformText.word_freq_count(corpus, method='frequency')
         for idx,row in tqdm(enumerate(corpus)):
             if idx == 0: continue
             doc_text_vector = row[1]
