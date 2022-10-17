@@ -6,17 +6,17 @@ import numpy as np
 import logging
 import pickle
 import json
-from preprocessing import TransformText
+from build_model.preprocessing import TransformText
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, roc_auc_score, precision_score, accuracy_score
-import config as cn
+from build_model import config as cn
 logging.basicConfig(level=logging.DEBUG)
 
 def run_and_log_model(estimator, comments=None) -> None:
     train_path = cn.TRAIN_FILE
     t = TransformText
     t.readcsv = train_path
-    output_dataset = t.run()
+    output_dataset = t.fit_transform()
     logging.info("Input dataset loaded")
     labels = np.array([x[0] for x in output_dataset])
     word_vector = np.array([x[1] for x in output_dataset])

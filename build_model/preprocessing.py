@@ -1,18 +1,19 @@
 import re
 import string
 import logging
+import json
+from textwrap import indent
 from typing import Dict, List, Tuple
 from tqdm import tqdm
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
+from build_model import config as cn
 
-logger = logging.basicConfig(level=logging.DEBUG)
 
 
 class CleanText:
 
-    text_str = None
-
+    @staticmethod
     def cleantext(text_str: str) -> str:
         #will replace the html characters with " "
         text_str=re.sub('<.*?>', ' ', text_str)  
@@ -50,10 +51,11 @@ class TransformText(CleanText):
     def clean_tuple(tuple_list:List[Tuple[int, list]]) -> List[Tuple[int, list]]:
         return [(int(x[0]),CleanText.cleantext(x[1])) for x in tuple_list]
 
-    def word_freq_count(corpus:List[Tuple[int, list]], method:str='frequency') -> Dict[str,float]:
+    def word_freq_count(corpus:List[Tuple[int, list]], method:str='frequency') -> str:
         """
-        return a dictionary of all words in the corpus and their
-        numeric weight according to the defined method
+        return a path to dictionary of all words in the corpus and their
+        numeric weight according to the defined method.
+        The dict looks like this Dict[str,float]
         args:
         corpus = list of tuples with label and documents
         method = count | frequency
@@ -70,7 +72,9 @@ class TransformText(CleanText):
         if method == 'frequency':
             for k,v in d_wordcount.items():
                 d_wordcount[k] = round(v/total_words,4)
-        return d_wordcount
+        with open(cn.BOW_PATH, "w") as f:
+            json.dump(d_wordcount,f,indent=4)
+        return cn.BOW_PATH
 
     def document_to_vector(corpus: List[Tuple[int, list]]) -> List[Tuple[int, list]]:
         """
@@ -79,9 +83,16 @@ class TransformText(CleanText):
             and feature vector
         """
         corpus_vector = list()
-        wordcount = TransformText.word_freq_count(corpus, method='frequency')
+        
+        try:
+            wordcount = json.load(open(cn.BOW_PATH))
+        except OSError as e:
+            logging.info("BOW dictionary does not exist.")
+            logging.info("Creating now.")
+            TransformText.word_freq_count(corpus, method='frequency')
+            wordcount = json.load(open(cn.BOW_PATH))
+
         for idx,row in tqdm(enumerate(corpus)):
-            if idx == 0: continue
             doc_text_vector = row[1]
             doc_vector = []
             i = 0
@@ -98,11 +109,19 @@ class TransformText(CleanText):
         return corpus_vector
 
 
-    def run() -> List[Tuple[int, list]]:
+    def fit_transform() -> List[Tuple[int, list]]:
         t = TransformText
         inputfile = t.readcsv
         outputfile = t.file_to_corpus(inputfile)
         outputfile = t.clean_tuple(outputfile)
         outputfile = t.document_to_vector(outputfile)
         return outputfile
+    
+    def transform(input_tweet: str) -> list:
+        t = TransformText
+        t_input = [(0,input_tweet)]
+        outputfile = t.clean_tuple(t_input)
+        outputfile = t.document_to_vector(outputfile)
+        return outputfile[0][1]
+
     
