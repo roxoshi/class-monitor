@@ -6,9 +6,9 @@ import gensim.downloader as api
 import numpy as np
 import pandas as pd
 
-model = api.load("glove-twitter-100")
+model = api.load("glove-twitter-200")
 
-vec_len = 100
+vec_len = 200
 
 def cleantext(text_str: str) -> str:
     #will replace the html characters with " "

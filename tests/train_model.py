@@ -7,7 +7,7 @@ import pandas as pd
 import logging
 import pickle
 import json
-from build_model import preprocessing
+from build_model.preprocessing import transform_dataframe
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, roc_auc_score, precision_score, accuracy_score
 from build_model import config as cn
@@ -18,7 +18,7 @@ def run_and_log_model(estimator, comments=None) -> None:
     df_train = pd.read_csv(train_path)
     logging.info("Input dataset loaded")
     labels = df_train['label']
-    word_vector = preprocessing.transform_dataframe(df_train,colname='tweet')
+    word_vector = transform_dataframe(df_train,colname='tweet')
     logging.info(f"X shape: {word_vector.shape}, Y shape: {labels.shape}")
     logging.info(f"train data shape: {word_vector.shape}")
     X_train, X_test, y_train, y_test = train_test_split(
