@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style.css') }}">
+    <title>Detect Hate Tweets</title>
+</head>
+<body>
+    <div class="buttonHolder">
+        <p class="textLabel">Enter tweet below</p><br><br>
+        <input type="text" id="fnameText" name="tweet"><br><br><br>
+        <input type="submit" value="Predict" id="fnameButton"><br>
+    <p class="predictOutput"></p>
+    </div>
+    <script src="{{ url_for('static',filename='scripts/index.js') }}"> </script>
+</body>

@@ -1,0 +1,27 @@
+.buttonHolder {
+    text-align: center;
+    margin: 0;
+    position: absolute;
+    left: 30%;
+    top: 40%;
+    -ms-transform: translateY(-40%);
+    transform: translateY(-50%);
+}
+
+.textLabel {
+    font-size: 30px;
+}
+
+#fnameText {
+    font-size: 30px;
+    width: 1000px;
+}
+
+#fnameButton {
+    font-size: 30px;
+    width: 200px;
+}
+
+.predictOutput {
+    font-size: 40px;
+}
