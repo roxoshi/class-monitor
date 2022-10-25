@@ -10,7 +10,4 @@ def prediction(event):
         tweet = event.get("tweet")
         predict_payload = wordvecs(tweet)
 
-        return {
-            "tweet": tweet,
-            "prediction": str(classifier.predict(predict_payload))
-        }
+        return str(classifier.predict(predict_payload)[0])
